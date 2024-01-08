@@ -35,6 +35,7 @@
   text-align: center;
 
   
+  
   background-color: #2c3e50;
   
   overflow: hidden;
