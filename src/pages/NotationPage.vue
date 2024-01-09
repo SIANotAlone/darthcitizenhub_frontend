@@ -2,6 +2,7 @@
     <h1 class="page_title">Випуск № {{ episode.number }} {{ episode.name }}</h1>
     <button @click="get_from_favorite" class="neon-btn neon-btn--purple">Додати з обраних</button>
     <button  @click="delete_episode(episode['id'])" class="neon-btn neon-btn--purple">Видалити випуск</button>
+    <div v-if="this.news_count!=0"><h3 class="news_count">Новин додано: {{ this.news_count }} шт. </h3></div>
     <div v-if="isNaN(data['notation']) == false">
         <h3 class="empty">Нотатки відсутні</h3></div>
     <div v-for="item in data['notation']" v-bind:key="item.id">
@@ -21,6 +22,8 @@
             <ckeditor :editor="editor" v-model="item['notation']" :config="editorConfig" :id="item['id']" />
             <button @click="get_editor_text(item['id'])" class="neon-btn neon-btn--purple save"
                 :id="item['id']">Зберегти</button>
+            <button  class="neon-btn neon-btn--purple save"
+               @click="delete_notation(item['id'])" :id="item['id']">Видалити</button>
 
         </div>
     </div>
@@ -50,6 +53,7 @@ export default {
 
             },
             editorData: '<p>Initial content</p>',
+            news_count : 0,
 
 
         }
@@ -58,11 +62,17 @@ export default {
     mounted() {
 
         axios.get(server_ip + '/episode/get/' + this.$route.params.id).then(response => {
-            this.data = response.data; this.episode = this.data['episode']
+            this.data = response.data; this.episode = this.data['episode'];
+            if (response.data['notation'] != null) {
+                this.news_count = this.data['notation'].length
+            }
+            
         })
+        
     },
     methods: {
 
+      
         async get_from_favorite() {
             let episode = { 'episode_id': parseInt(this.$route.params.id) }
             console.log(episode['episode_id'])
@@ -97,6 +107,22 @@ export default {
 
             }
             //   console.log(document.getElementsByClassName('ck ck-content ck-editor__editable')[0].innerText);
+        },
+        delete_notation(id){
+            let request = { "id" : id}
+            var result = window.confirm("Ви впенені, що хочете видалити новину з випуска? ");
+            if (result) {
+                axios.post(server_ip + '/episode/notation/delete/' ,request).then(response => {
+                    if (response.data['status'] == '200, OK'){
+
+                        this.data= {}
+                        axios.get(server_ip + '/episode/get/' + this.$route.params.id).then(response => {
+                this.data = response.data; this.episode = this.data['episode']
+        })
+                        
+                    }
+                })
+            }
         },
         delete_episode(id){
 
@@ -188,5 +214,19 @@ button {
     margin-bottom: 40px;
     color: white;
 }
+.news_count{ 
+
+color: #ff5dd1;
+text-shadow:
+0 0 5px #ff5dd1,
+0 0 10px #ff5dd1,
+0 0 20px #ff5dd1,
+0 0 40px #ff19be,
+0 0 80px #ff19be,
+0 0 90px #ff19be,
+0 0 100px #ff19be,
+0 0 150px #ff19be;
+}
+
 
 </style>

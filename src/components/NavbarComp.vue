@@ -40,8 +40,13 @@
 }
 .navbar  :hover{
 border-radius: 5px;
-  box-shadow: 10px 10px 100px 6px #5dbdff;
-  color: #5dbdff;
   
+  color: #000;
+    
+  
+}
+.navbar li :hover{
+  background-color: #2eabff;
+  box-shadow: 10px 10px 100px 6px #5dbdff;
 }
 </style>
