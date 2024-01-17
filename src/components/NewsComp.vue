@@ -74,7 +74,7 @@ export default {
 }
 </script>
 
-<style >
+<style scoped>
 .short {
   width: 100%;
 
@@ -151,6 +151,7 @@ img {
   align-items: center;
 
 }
+
 
 .fav label {
   margin-left: 5px;

@@ -109,6 +109,7 @@ export default {
 
 
   }
+  
 
   padding-bottom: 6px;
   font-weight: 700;

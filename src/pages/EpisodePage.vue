@@ -196,4 +196,16 @@ li {
 .empty{
   padding-top: 20px;  
 }
+.org{
+  text-align: center;
+}
+.org {
+  font-size: 12px;
+  margin-bottom: 10px;
+  color: grey;
+  margin-top: 10px;
+  margin-top: auto;
+
+
+}
 </style>

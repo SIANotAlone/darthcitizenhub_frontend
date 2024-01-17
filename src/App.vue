@@ -4,7 +4,7 @@
 
 
     <div class="tag">
-      <p>Останні новини by <a href="https://www.youtube.com/@DarthCitizen/videos"><span class="yt">Darth
+      <p style="padding-top: 40px;">Останні новини by <a href="https://www.youtube.com/@DarthCitizen/videos"><span class="yt">Darth
             Citizen</span></a> Youtube. </p>
     </div>
     <MyNavBar></MyNavBar>
@@ -19,8 +19,10 @@ import MyNavBar from "@/components/NavbarComp.vue"
 
 
 
-export default {
 
+export default {
+  name: "App",
+  
   components: {
     MyNavBar,
 
@@ -74,4 +76,21 @@ export default {
 .yt {
   background: rgb(173, 86, 200);
   background: linear-gradient(326deg, rgba(173, 86, 200, 1) 0%, rgba(125, 160, 232, 1) 100%);
-}</style>
+}
+
+button {
+  width: 200px;
+  height: 50px;
+}
+
+
+.yt {
+  background: rgb(173, 86, 200);
+  background: linear-gradient(326deg, rgba(173, 86, 200, 1) 0%, rgba(125, 160, 232, 1) 100%);
+}
+.title{
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+</style>
