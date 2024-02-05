@@ -1,22 +1,23 @@
 <template>
-  <h1 class="page_title">Випуски</h1>
-  <button  @click="new_episode" class="neon-btn neon-btn--purple">Новий випуск</button>
+<h1 class="page_title">Сценарії</h1>
+<button  @click="new_scenario" class="neon-btn neon-btn--purple">Новий сценарії</button>
 
-  <div class="episodes">
-    <div v-if="episodes == null">
-      <h3 class="empty">Випуски відсутні</h3>
-    </div>
-    <ol class="list"> 
-      <div v-for="item in episodes" v-bind:key="item.id">
-        <li> 
-          <img :src="released_src" :id="item['id']" class="released" v-if="item['released']">
-          <a class="title" :href="'/episode/' + item['id']">{{ item['name'] }}. Випуск №{{ item['number'] }}</a>
-          <p class="org">Створено: <span class="date"> {{ formatDate(item['date']) }}</span></p>
-        </li>
-
-      </div>
-    </ol>
+<div class="scenarios">
+  <div v-if="scenarios == null">
+    <h3 class="empty">Сценарії відсутні</h3>
   </div>
+  <ol class="list"> 
+    <div v-for="item in scenarios" v-bind:key="item.id">
+      <li> 
+        <img :src="released_src" :id="item['id']" class="released" v-if="item['released']">
+        <a class="title" :href="'/scenario/' + item['id']">{{ item['title'] }}</a>
+        <p class="org">Створено: <span class="date"> {{ formatDate(item['date']) }}</span></p>
+        <p class="org" v-if="item['released']">Реліз: <span class="date"> {{ formatDate(item['date_released']) }}</span></p>
+      </li>
+
+    </div>
+  </ol>
+</div>
 </template>
 <script>
 
@@ -27,7 +28,7 @@ export default {
 
   data() {
     return {
-      episodes: [],
+      scenarios: [],
       released_src: require('@/assets/released.svg'),
       released_color: '##5dbdff',
     }
@@ -41,15 +42,17 @@ export default {
 
       });
     },
-    new_episode(){
-      this.$router.push({path: '/episode/new'})
+    new_scenario(){
+      this.$router.push({path: '/scenario/new/'})
 
     }
   },
 
   mounted() {
-    axios.get(server_ip + '/episode/get_all').then(response => this.episodes = response.data)
-
+    axios.get(server_ip + '/scenario/get_all').then(response => {this.scenarios=response.data
+        console.log(this.scenarios)
+    })
+    
   }
 
 
@@ -57,7 +60,7 @@ export default {
 
 </script>
 <style scoped>
-.episodes {
+.scenarios {
   background-color: ghostwhite;
   margin-left: 20%;
   margin-right: 20%;
@@ -210,4 +213,5 @@ li {
 
 
 }
+
 </style>

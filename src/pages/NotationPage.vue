@@ -50,9 +50,11 @@ import 'vue3-toastify/dist/index.css';
 
 export default {
     setup() {
+        const theme = 'dark';
         const notify = (message) => {
             toast.success(message, {
                 autoClose: 1000,
+                theme,
             }); // ToastOptions
         }
         return { notify };
@@ -103,6 +105,7 @@ export default {
             console.log(add_req)
             console.log(get_notation)
             this.news_count = this.data['notation'].length
+            this.notify('Додано')
         },
         formatDate(dateString) {
             const date = new Date(dateString);
