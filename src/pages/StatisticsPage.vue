@@ -46,6 +46,22 @@
 
             </div>
         </div>
+        <h4>Youtube</h4>
+        <div class="wrapper">
+            <div class="block">
+                <span class="card_title">Кіл-ть переглядів</span>
+                <p class="count"> {{ youtube['viewCount'] }} </p>
+
+            </div>
+            <div class="block">
+                <span class="card_title">Кіл-ть підписок</span>
+                <p class="count"> {{ youtube['subscriberCount'] }} </p>
+
+            </div>
+
+        </div>
+        
+
         <div class="apex_chart">
             <h4>Новин по джерелу</h4>
             <div class="chart_pie_wrapper">
@@ -88,7 +104,8 @@ export default {
 
             }],
             months: [],
-            count: []
+            count: [],
+            youtube:{}
 
 
         }
@@ -175,7 +192,10 @@ export default {
             chart.render();
 
         })
+        axios.get(server_ip + '/statistics/youtube').then(response => {
+            this.youtube = response.data
 
+        });
 
 
     }
@@ -239,6 +259,8 @@ export default {
 .wrapper {
     display: flex;
     justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
     
 }
 .page_title{

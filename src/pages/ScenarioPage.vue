@@ -1,5 +1,6 @@
 <template>
     <h1 class="page_title">Сценарій</h1>
+    <button v-if="scenario['released']==false" @click="release_scenario" class="neon-btn neon-btn--purple">Зарелізити сценарій</button>
     <button @click="delete_scenario(scenario['id'])" class="neon-btn neon-btn--purple">Видалити сценарій</button>
     <h2 class="edit_title">Редагувати сценарій</h2>
     <div class="editors">
@@ -107,6 +108,20 @@ export default {
             }
 
 
+        },
+        release_scenario(){
+            let id = this.scenario['id']
+            let req = {"id": id}
+            var result = window.confirm("Ви впенені, що хочете зарелізити cценарій? ");
+            if (result) {
+                axios.post(server_ip + '/scenario/release/', req).then(response => {
+                    if (response.data['status'] == '200, OK') {
+
+                        this.notify('Випущено в реліз')
+                        this.$router.push({ path: '/scenarios' })
+                    }
+                })
+            }
         }
     }
 
@@ -230,4 +245,8 @@ button {
         0 0 150px #ff19be;
 }
 
+button{
+  margin-left: 10px;
+  margin-right: 10px;
+}
 </style>

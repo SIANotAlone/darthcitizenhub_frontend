@@ -1,6 +1,7 @@
 <template>
     <h1 class="page_title">Випуск № {{ episode.number }} {{ episode.name }}</h1>
     <button @click="get_from_favorite" class="neon-btn neon-btn--purple">Додати з обраних</button>
+    <button v-if="episode['released']==false" @click="release_episode(episode['id'])" class="neon-btn neon-btn--purple">Зарелізити випуск</button>
     <button @click="delete_episode(episode['id'])" class="neon-btn neon-btn--purple">Видалити випуск</button>
     <div v-if="this.news_count != 0">
         <h3 class="news_count">Новин додано: {{ this.news_count }} шт. </h3>
@@ -154,6 +155,17 @@ export default {
                             this.data = response.data; this.episode = this.data['episode']
                         })
 
+                    }
+                })
+            }
+        },
+        release_episode(id){
+            let request = { "id": id }
+            var result = window.confirm("Ви впенені, що хочете зарелізити випуск?");
+            if (result){
+                axios.post(server_ip + '/episode/release/', request).then(response => {
+                    if (response.data['status'] == '200, OK') {
+                        this.$router.push({ path: '/episode' })
                     }
                 })
             }
