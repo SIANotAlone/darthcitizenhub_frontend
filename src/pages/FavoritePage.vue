@@ -2,6 +2,7 @@
     <div>
         <h1 class="page_title">Закладки</h1>
         <button   @click="delete_all_favorite" class="neon-btn neon-btn--purple">Видалити всі закладки</button>
+        <h3 v-if="news == null" class="empty">Новин в закладки поки що не додано</h3>
         <NewsComp v-bind:news="news"></NewsComp>
     </div>
 </template>
@@ -10,11 +11,21 @@
 import axios from 'axios';
 import NewsComp from "@/components/NewsComp.vue"
 import server_ip from "@/myconfig/ipconfig.js"
-
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 export default {
 
-
+  setup() {
+        const theme = 'dark';
+        const notify = (message) => {
+            toast.success(message, {
+                autoClose: 1000,
+                theme,
+            }); // ToastOptions
+        }
+        return { notify };
+    },
 components: {
   NewsComp
 },
@@ -40,13 +51,9 @@ methods:{
     var result = window.confirm("Ви впенені, що хочете видалити всі новини зі списку обраних?");
     if (result) {
       axios.post(server_ip +'/news/games/deleteallfavorite/')
-      this.news = [];
-        // User clicked OK
-        // Perform the delete operation
-    } else {
-        // User clicked Cancel or closed the dialog
-        // Cancel the operation
-    }
+      this.news = null;
+      this.notify("Закладки очищено")
+    } 
 
     
 
@@ -90,6 +97,9 @@ text-shadow:
 0 0 100px #8bd0ff,
 0 0 150px #8bd0ff;
 }
-
+.empty{
+color: #fff;
+margin-bottom: 50px;
+}
 
 </style>

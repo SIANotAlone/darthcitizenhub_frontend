@@ -165,7 +165,7 @@ export default {
             if (result){
                 axios.post(server_ip + '/episode/release/', request).then(response => {
                     if (response.data['status'] == '200, OK') {
-                        this.$router.push({ path: '/episode' })
+                        this.$router.push({ path: '/episode', query: { message: "Випущено в реліз" } })
                     }
                 })
             }
@@ -177,7 +177,7 @@ export default {
             if (result) {
                 axios.post(server_ip + '/episode/delete/', request).then(response => {
                     if (response.data['status'] == '200, OK') {
-                        this.$router.push({ path: '/episode' })
+                        this.$router.push({ path: '/episode', query: { message: "Епізод видалено" } })
                     }
 
                 })

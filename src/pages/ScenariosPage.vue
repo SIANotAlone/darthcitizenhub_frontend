@@ -22,10 +22,21 @@
 <script>
 
 import axios from 'axios';
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 import server_ip from "@/myconfig/ipconfig.js"
 export default {
-
+  setup() {
+        const theme = 'dark';
+        const notify = (message) => {
+            toast.success(message, {
+                autoClose: 1000,
+                theme,
+            }); // ToastOptions
+        }
+        return { notify };
+    },
   data() {
     return {
       scenarios: [],
@@ -50,8 +61,21 @@ export default {
 
   mounted() {
     axios.get(server_ip + '/scenario/get_all').then(response => {this.scenarios=response.data
-        console.log(this.scenarios)
+        // console.log(this.scenarios)
+        
     })
+    try{
+      const message = this.$route.query.message;
+
+      if (message) {
+        this.notify(message);
+      }
+    }
+    catch(error){
+      console.log(error)
+    }
+  
+
     
   }
 

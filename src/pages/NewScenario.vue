@@ -35,7 +35,7 @@ export default {
         axios.post(server_ip + '/scenario/add', request).then(response => {
           if (response.data['status'] == '200, OK') {
             alert("Випуск № " + number + " " + name + " створено")
-            this.$router.push({ path: '/scenarios' })
+            this.$router.push({ path: '/scenarios', query: { message: "Сценарій створено" } })
           }
         })
 

@@ -99,8 +99,8 @@ export default {
                 axios.post(server_ip + '/scenario/delete', {"id": id}).then(response => {
                     if (response.data['status'] == '200, OK') {
 
-                        this.notify('Видалено')
-                        this.$router.push({ path: '/scenarios' })
+                        // this.notify('Видалено')
+                        this.$router.push({ path: '/scenarios', query: { message: "Сценарій видалено" } })
                         
 
                     }
@@ -117,8 +117,8 @@ export default {
                 axios.post(server_ip + '/scenario/release/', req).then(response => {
                     if (response.data['status'] == '200, OK') {
 
-                        this.notify('Випущено в реліз')
-                        this.$router.push({ path: '/scenarios' })
+                        // this.notify('Випущено в реліз')
+                        this.$router.push({ path: '/scenarios',query: {message: "Випущено в реліз"}})
                     }
                 })
             }

@@ -36,7 +36,7 @@ export default {
         axios.post(server_ip + '/episode/new/', request).then(response => {
           if (response.data['status'] == '200, OK') {
             alert("Випуск № " + number + " " + name + " створено")
-            this.$router.push({ path: '/episode' })
+            this.$router.push({ path: '/episode', query: { message: "Випуск створено" } })
           }
         })
 
