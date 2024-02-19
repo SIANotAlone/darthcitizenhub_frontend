@@ -36,7 +36,7 @@
 
             </div>
             <div class="block">
-                <span class="card_title">Новин додано</span>
+                <span class="card_title">Новин у релізах</span>
                 <p class="count"> {{ statistics['main']['notations'] }} </p>
 
             </div>

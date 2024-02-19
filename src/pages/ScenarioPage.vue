@@ -1,24 +1,25 @@
 <template>
     <h1 class="page_title">Сценарій</h1>
     <button v-if="scenario['released']==false" @click="release_scenario" class="neon-btn neon-btn--purple">Зарелізити сценарій</button>
-    <button @click="delete_scenario(scenario['id'])" class="neon-btn neon-btn--purple">Видалити сценарій</button>
-    <h2 class="edit_title">Редагувати сценарій</h2>
+    <button v-if="scenario['released']==false" @click="delete_scenario(scenario['id'])" class="neon-btn neon-btn--purple">Видалити сценарій</button>
+    <h2 v-if="scenario['released']==false" class="edit_title">Редагувати сценарій</h2>
+    <h2 v-if="scenario['released']==true" class="edit_title">випущено</h2>
     <div class="editors">
     <div class="form__group field">
-      <input type="input" class="form__field" placeholder="Номер" name="name" id='number' required v-model="scenario['number']"/>
+      <input :disabled="scenario['released']==true" type="input" class="form__field" placeholder="Номер" name="name" id='number' required v-model="scenario['number']"/>
       <label for="name" class="form__label">Номер</label>
     </div>
     <div class="form__group field">
-      <input type="input" class="form__field" placeholder="Назва" name="name" id='name' required  v-model="scenario['title']"/>
+      <input :disabled="scenario['released']==true" type="input" class="form__field" placeholder="Назва" name="name" id='name' required  v-model="scenario['title']"/>
       <label for="name" class="form__label">Назва</label>
     </div>
   </div>
     <div class="notation">
 
-        <ckeditor :editor="editor" v-model="scenario['body']"  :id="scenario['id']" :config="editorConfig" />
+        <ckeditor :disabled="scenario['released']==true" :editor="editor" v-model="scenario['body']"  :id="scenario['id']" :config="editorConfig" />
     </div>
   
-            <button @click="update_scenario()" class="neon-btn neon-btn--purple save"
+            <button v-if="scenario['released']==false" @click="update_scenario()" class="neon-btn neon-btn--purple save"
                 >Зберегти</button>
 
 

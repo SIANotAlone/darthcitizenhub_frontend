@@ -2,8 +2,8 @@
 <nav class="navbar">
     <ul>
         <li><a href="/">Ігри</a></li>
-        <li><a href="#">Фільми</a></li>
-        <li><a href="#">Серіали</a></li>
+        <!-- <li><a href="#">Фільми</a></li>
+        <li><a href="#">Серіали</a></li> -->
         <li><a href="/favorite">Закладки</a></li>
         <li><a href="/episode">Випуски</a></li>
         <li><a href="/scenarios">Сценарії</a></li>
@@ -26,6 +26,8 @@
   list-style: none;
   margin-left: 20%;
   margin-right: 20%;
+  display: flex;
+  justify-content: center;
   
 }
 .navbar li {

@@ -1,10 +1,12 @@
 <template>
     <h1 class="page_title">Випуск № {{ episode.number }} {{ episode.name }}</h1>
-    <button @click="get_from_favorite" class="neon-btn neon-btn--purple">Додати з обраних</button>
+    <button v-if="episode['released']==false" @click="get_from_favorite" class="neon-btn neon-btn--purple">Додати з обраних</button>
     <button v-if="episode['released']==false" @click="release_episode(episode['id'])" class="neon-btn neon-btn--purple">Зарелізити випуск</button>
-    <button @click="delete_episode(episode['id'])" class="neon-btn neon-btn--purple">Видалити випуск</button>
+    <button v-if="episode['released']==false" @click="delete_episode(episode['id'])" class="neon-btn neon-btn--purple">Видалити випуск</button>
+    <button @click="generate_pdf(episode['id'])" class="neon-btn neon-btn--purple">PDF</button>
     <div v-if="this.news_count != 0">
-        <h3 class="news_count">Новин додано: {{ this.news_count }} шт. </h3>
+        <h3 v-if="episode['released']==false" class="news_count">Новин додано: {{ this.news_count }} шт. </h3>
+        <h3 v-if="episode['released']==true" class="news_count">Випуск випущено в реліз</h3>
     </div>
     <div v-if="isNaN(data['notation']) == false">
         <h3 class="empty">Нотатки відсутні</h3>
@@ -28,10 +30,16 @@
             </div>
 
             <div class="org">Джерело: <span class="origin">{{ item['origin'] }}</span></div>
-            <ckeditor :editor="editor" v-model="item['notation']" :config="editorConfig" :id="item['id']" />
-            <button @click="get_editor_text(item['id'])" class="neon-btn neon-btn--purple save"
+            <div v-if="episode['released']==false">
+                <ckeditor :editor="editor" v-model="item['notation']" :config="editorConfig" :id="item['id']" />
+            </div>
+            <div v-if="episode['released']==true">
+                <p v-html="item['notation']" class="text"></p>
+                <br><br>
+            </div>
+            <button v-if="episode['released']==false" @click="get_editor_text(item['id'])" class="neon-btn neon-btn--purple save"
                 :id="item['id']">Зберегти</button>
-            <button class="neon-btn neon-btn--purple save" @click="delete_notation(item['id'])"
+            <button v-if="episode['released']==false" class="neon-btn neon-btn--purple save" @click="delete_notation(item['id'])"
                 :id="item['id']">Видалити</button>
 
         </div>
@@ -117,6 +125,9 @@ export default {
 
             });
         },
+        generate_pdf(id) {
+            window.location.href = server_ip+'/episode/get/' + id + '/pdf';
+        },
         get_editor_text(id) {
 
 
@@ -193,6 +204,13 @@ export default {
 
 </script>
 <style scoped>
+.text{
+    margin-left: 40px;
+    margin-right: 40px;
+    text-align: justify;
+
+
+}
 .notation {
     background-color: ghostwhite;
     margin-left: 20%;

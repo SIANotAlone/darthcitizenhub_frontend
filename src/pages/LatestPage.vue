@@ -7,7 +7,7 @@
     <option v-for="item in origins" :key="item.origin">{{ item.origin }}</option>
     
   </select>
-  <span style="color: white;"> Обрано: {{ selected }}</span>
+  <!-- <span style="color: white;"> Обрано: {{ selected }}</span> -->
 </div>
 
         <NewsComp v-bind:news="news"></NewsComp>

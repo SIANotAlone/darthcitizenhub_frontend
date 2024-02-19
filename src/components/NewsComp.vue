@@ -21,9 +21,16 @@
         </div>
 
       </div>
+      <!-- Тут помилка -->
+      <!-- <div class="fav">
+        <label class="add_to_fav">До закладок <input type="checkbox" v-bind:checked="item.favorit" v-model="isChecked"
+            @change="handleChange(item)"></label>
+      </div> -->
+
+      <!-- Полагодив. Це робочий варіант -->
       <div class="fav">
-        <label class="add_to_fav">До закладок <input type="checkbox" :checked="item.favorit" v-model="isChecked"
-            @change="handleChange(item.id)"></label>
+        <label class="add_to_fav">До закладок <input type="checkbox"  v-model="item.favorit"
+            @change="handleChange(item)" ></label>
       </div>
 
 
@@ -37,6 +44,7 @@
 <script>
 import server_ip from "@/myconfig/ipconfig.js"
 import axios from 'axios';
+
 export default {
 
 
@@ -45,15 +53,17 @@ export default {
       type: Array,
       required: true
 
-    }
+    },
+
   },
+
   methods: {
-    handleChange(id) {
-
-      //console.log(`Checkbox with ID ${id} changed: ${this.isChecked}`)
-
-      let json = { "id": id, "checked": this.isChecked }
+    
+    handleChange(item) {
+     
+      let json = { "id": item.id, "checked": item.favorit}
       axios.post(server_ip + '/news/games/changefavorite/', json)
+      console.log(item.favorit)
     },
     datefromUTC(date) {
       const timestampInMilliseconds = date * 1000;
