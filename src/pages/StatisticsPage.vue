@@ -7,7 +7,7 @@
             <div class="block">
                 <span class="card_title">Всього зібрано</span>
                 <p class="count"> {{ statistics['main']['games_news'] }}</p>
-                
+
             </div>
 
             <div class="block">
@@ -60,7 +60,7 @@
             </div>
 
         </div>
-        
+
 
         <div class="apex_chart">
             <h4>Новин по джерелу</h4>
@@ -69,11 +69,18 @@
             </div>
         </div>
         <div class="apex_chart">
+            <h4>В цьому місяці</h4>
+            <div class="chart_pie_wrapper">
+                <div id="chart_pie_this_month"></div>
+            </div>
+        </div>
+
+        <div class="apex_chart">
             <h4>Новин за останні 12 місяців</h4>
             <div id="chart"></div>
         </div>
 
-       
+
 
     </div>
 </template>
@@ -98,6 +105,10 @@ export default {
                 by_origin: {
                     origins: [],
                     count: []
+                },
+                by_origin_this_month: {
+                    origins: [],
+                    count: []
                 }
             },
             series: [{
@@ -105,7 +116,7 @@ export default {
             }],
             months: [],
             count: [],
-            youtube:{}
+            youtube: {}
 
 
         }
@@ -118,30 +129,50 @@ export default {
                 this.months.push(item['month_name'] + " " + item['year'])
                 this.count.push(item['count_news'])
             });
-              
-        var options_pie = {
-          series: this.statistics.by_origin.count,
-          chart: {
-          width: 380,
-          type: 'pie',
-        },
-        labels: this.statistics.by_origin.origins,
-        responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200
-            },
-            legend: {
-              position: 'bottom'
-            }
-          }
-        }]
-        };
 
-        var chart_pie = new ApexCharts(document.querySelector("#chart_pie"), options_pie);
-        chart_pie.render();
-            
+            var options_pie = {
+                series: this.statistics.by_origin.count,
+                chart: {
+                    width: 380,
+                    type: 'pie',
+                },
+                labels: this.statistics.by_origin.origins,
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+            var options_pie_this_month = {
+                series: this.statistics.by_origin_this_month.count,
+                chart: {
+                    width: 380,
+                    type: 'pie',
+                },
+                labels: this.statistics.by_origin_this_month.origins,
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
+            var chart_pie = new ApexCharts(document.querySelector("#chart_pie"), options_pie);
+            chart_pie.render();
+            var this_months = new ApexCharts(document.querySelector("#chart_pie_this_month"), options_pie_this_month);
+            this_months.render();
+
             var options = {
                 series: [{
                     name: 'Новин зібрано',
@@ -209,7 +240,7 @@ export default {
 <style scoped>
 .statistics {
 
-    background-color:#ededed;
+    background-color: #ededed;
 }
 
 .apex_chart {
@@ -227,32 +258,33 @@ export default {
     width: 150px;
     margin-left: 20px;
     border-radius: 10%;
-    
+
     opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 1.5s ease-out forwards;
+    transform: translateY(20px);
+    animation: fadeInUp 1.5s ease-out forwards;
 
 }
 
 .card_title,
 .count {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeInUp 1.5s ease-out forwards;
-}
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 1.5s ease-out forwards;
 }
 
-.count{
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.count {
     margin-top: 40px;
     align-self: center;
     font-size: larger;
     font-weight: 700;
-    
+
 
 }
 
@@ -261,19 +293,25 @@ export default {
     justify-content: center;
     margin-top: 20px;
     margin-bottom: 20px;
-    
+
 }
-.page_title{
+
+.page_title {
     margin-top: 20px;
     margin-bottom: 20px;
     padding-top: 20px;
 }
-.card_title{
+
+.card_title {
     font-size: small;
     text-align: left;
 }
-.chart_pie_wrapper{
-display: flex;
-justify-content: center;
+
+.chart_pie_wrapper {
+    display: flex;
+    justify-content: center;
 }
-</style>
+
+.pie_wrapper {
+    display: flex;
+}</style>
