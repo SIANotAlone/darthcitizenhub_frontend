@@ -8,6 +8,33 @@
         <h3 v-if="episode['released']==false" class="news_count">Новин додано: {{ this.news_count }} шт. </h3>
         <h3 v-if="episode['released']==true" class="news_count">Випуск випущено в реліз</h3>
     </div>
+    <!-- опис для відео -->
+    <div class="notation">
+            <div class="title"> Опис </div>
+            <input type="file" ref="fileInput" @change="get_contents">
+            <div v-if="episode['released']==false">
+                <ckeditor :editor="editor" v-model="episode.description" :config="editorConfig" />
+                <button v-if="episode['released']==false" @click="save_contents"  class="neon-btn neon-btn--purple save"
+                :id="save_contents">Зберегти</button>
+            </div>
+            <div v-if="episode['released']==true">
+                <p v-html="episode.description" class="text"></p>
+                <br><br>
+            </div>
+        </div>
+        <!-- вступ для відео -->
+        <div class="notation">
+            <div class="title"> Вступ </div>
+            <div v-if="episode['released']==false">
+                <ckeditor :editor="editor" v-model="episode.intro" :config="editorConfig" :id="intro" />
+                <button v-if="episode['released']==false" @click="save_intro" class="neon-btn neon-btn--purple save"
+                :id="save_intro">Зберегти</button>
+            </div>
+            <div v-if="episode['released']==true">
+                <p v-html="episode.intro" class="text"></p>
+                <br><br>
+            </div>
+        </div>
     <div v-if="isNaN(data['notation']) == false">
         <h3 class="empty">Нотатки відсутні</h3>
     </div>
@@ -43,7 +70,21 @@
                 :id="item['id']">Видалити</button>
 
         </div>
+
     </div>
+    <!-- закінчення відео -->
+    <div class="notation">
+            <div class="title"> Закінчення </div>
+            <div v-if="episode['released']==false">
+                <ckeditor :editor="editor" v-model="episode.ending" :config="editorConfig" :id="ending" />
+                <button v-if="episode['released']==false" @click="save_ending" class="neon-btn neon-btn--purple save"
+                :id="save_intro">Зберегти</button>
+            </div>
+            <div v-if="episode['released']==true">
+                <p v-html="episode.ending" class="text"></p>
+                <br><br>
+            </div>
+        </div>
 </template>
 <script>
 
@@ -59,6 +100,7 @@ import 'vue3-toastify/dist/index.css';
 
 export default {
     setup() {
+
         const theme = 'dark';
         const notify = (message) => {
             toast.success(message, {
@@ -84,7 +126,7 @@ export default {
             },
             editorData: '<p>Initial content</p>',
             news_count: 0,
-
+            selectedFile: null,
 
         }
     },
@@ -125,6 +167,64 @@ export default {
 
             });
         },
+        async get_contents(event) {
+            const selectedFile = event.target.files[0];
+
+            if (!selectedFile) {
+            console.error('No file selected');
+            return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', selectedFile);
+
+            const response = await axios.post(server_ip + '/episode/contents/', formData)
+            // console.log(response)
+            let desc=""
+            let contents = response.data['contents']
+            contents.forEach(element => {
+                desc+='<p>'+element+"</p>"
+            });
+            
+            this.episode['description']=desc
+            this.notify('Оброблено')
+
+        },
+        save_contents(){
+            //0 - опис
+            let content = document.getElementsByClassName('ck ck-content ck-editor__editable')[0].innerHTML
+            let req = {"id":this.episode['id'],"content":content}
+            axios.post(server_ip + '/episode/update_contents/', req).then(response => {
+                if (response.data['status'] == '200, OK') {
+                    this.notify('Збережено')
+                }
+            })
+            
+            
+        },
+        save_intro(){
+            //1 - вступ
+            let content = document.getElementsByClassName('ck ck-content ck-editor__editable')[1].innerHTML
+            let req = {"id":this.episode['id'],"content":content}
+            axios.post(server_ip + '/episode/update_intro/', req).then(response => {
+                if (response.data['status'] == '200, OK') {
+                    this.notify('Збережено')
+                }
+            })
+            
+        },
+        save_ending(){
+            //останній - ending
+            let count = document.getElementsByClassName('ck ck-content ck-editor__editable').length -1
+            let content = document.getElementsByClassName('ck ck-content ck-editor__editable')[count].innerHTML
+            let req = {"id":this.episode['id'],"content":content}
+            axios.post(server_ip + '/episode/update_ending/', req).then(response => {
+                if (response.data['status'] == '200, OK') {
+                    this.notify('Збережено')
+                }
+            })
+            // console.log(req)
+        },
         generate_pdf(id) {
             window.location.href = server_ip+'/episode/get/' + id + '/pdf';
         },
@@ -133,18 +233,29 @@ export default {
 
             // Now you can use the editorValue as needed
             //   console.log("Кількість нотаток "+this.data['notation'].length)
+
+            //0-опис
+            //1-вступ
+            //останній - ending
             let episodes = document.getElementsByClassName('ck ck-content ck-editor__editable')
-            for (let ep = 0; ep < episodes.length; ep++) {
-                let notation_id = this.data['notation'][ep]['id']
+
+            for (let ep = 2; ep < episodes.length-1; ep++) {
+                //не враховуємо перші два та останній елемент зі списку
+                let ep1=ep-2
+                let notation_id = this.data['notation'][ep1]['id']
                 let notation = episodes[ep].innerHTML
                 // console.log(notation_id)
+
                 if (id == notation_id) {
                     let update_request = {
                         "id": notation_id,
                         "notation": notation
                     }
                     axios.post(server_ip + '/episode/notation/update/', update_request)
+                    // console.log(update_request)
                     this.notify('Збережено')
+
+                    
                     // console.log('notation id ' + notation_id)
                     // console.log(episodes[ep].innerText);
                 }

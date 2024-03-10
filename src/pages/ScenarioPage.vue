@@ -59,6 +59,7 @@ export default {
                 
 
             },
+            
             editorData: '<p>Initial content</p>',
             news_count: 0,
 
