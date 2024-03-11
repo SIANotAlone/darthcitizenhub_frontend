@@ -1,4 +1,3 @@
-
 <template>
     <div class="statistics">
         <h1 class="page_title">Статистика</h1>
@@ -61,19 +60,27 @@
 
         </div>
 
+        <div style="display: flex; max-width: 150px; ">
+            <div class="apex_chart">
+                <h4>Новин по джерелу</h4>
+                <div class="chart_pie_wrapper">
+                    <div id="chart_pie"></div>
+                </div>
+            </div>
+            <div class="apex_chart">
+                <h4>В цьому місяці</h4>
+                <div class="chart_pie_wrapper">
+                    <div id="chart_pie_this_month"></div>
+                </div>
+            </div>
+            <div class="apex_chart">
+                <h4>Топ джерел в релізах</h4>
+                <div class="chart_pie_wrapper">
+                    <div id="chart_pie_released"></div>
+                </div>
+            </div>
+        </div>
 
-        <div class="apex_chart">
-            <h4>Новин по джерелу</h4>
-            <div class="chart_pie_wrapper">
-                <div id="chart_pie"></div>
-            </div>
-        </div>
-        <div class="apex_chart">
-            <h4>В цьому місяці</h4>
-            <div class="chart_pie_wrapper">
-                <div id="chart_pie_this_month"></div>
-            </div>
-        </div>
 
         <div class="apex_chart">
             <h4>Новин за останні 12 місяців</h4>
@@ -108,6 +115,10 @@ export default {
                 },
                 by_origin_this_month: {
                     origins: [],
+                    count: []
+                },
+                by_origin_in_released:{
+                    origin: [],
                     count: []
                 }
             },
@@ -168,10 +179,31 @@ export default {
                     }
                 }]
             };
+            var options_pie_released = {
+                series: this.statistics.by_origin_in_released.count,
+                chart: {
+                    width: 380,
+                    type: 'pie',
+                },
+                labels: this.statistics.by_origin_in_released.origin,
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        chart: {
+                            width: 200
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }]
+            };
             var chart_pie = new ApexCharts(document.querySelector("#chart_pie"), options_pie);
             chart_pie.render();
             var this_months = new ApexCharts(document.querySelector("#chart_pie_this_month"), options_pie_this_month);
             this_months.render();
+            var released = new ApexCharts(document.querySelector("#chart_pie_released"), options_pie_released);
+            released.render();
 
             var options = {
                 series: [{
@@ -223,6 +255,9 @@ export default {
             chart.render();
 
         })
+
+
+        
         axios.get(server_ip + '/statistics/youtube').then(response => {
             this.youtube = response.data
 
@@ -314,4 +349,5 @@ export default {
 
 .pie_wrapper {
     display: flex;
-}</style>
+}
+</style>

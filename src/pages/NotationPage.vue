@@ -11,7 +11,7 @@
     <!-- опис для відео -->
     <div class="notation">
             <div class="title"> Опис </div>
-            <input type="file" ref="fileInput" @change="get_contents">
+            <input v-if="episode['released']==false" type="file" ref="fileInput" @change="get_contents">
             <div v-if="episode['released']==false">
                 <ckeditor :editor="editor" v-model="episode.description" :config="editorConfig" />
                 <button v-if="episode['released']==false" @click="save_contents"  class="neon-btn neon-btn--purple save"
