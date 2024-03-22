@@ -38,12 +38,12 @@
     <div v-if="isNaN(data['notation']) == false">
         <h3 class="empty">Нотатки відсутні</h3>
     </div>
-    <div v-for="item in data['notation']" v-bind:key="item.id">
+    <div v-for="(item , index) in data['notation']" v-bind:key="item.id">
 
         <div class="notation">
 
             <div class="title">
-                <h3><a :href="'' + item['url']" class="title">{{ item['title'] }}</a></h3>
+                <h3><a :href="'' + item['url']" class="title">#{{ index+1 }} {{ item['title'] }}</a></h3>
             </div>
             <div class="wraper">
                 <div class="preview"><a :href="item.url" :key="item.url"><img :src="item['preview']" v-bind:alt="pic"></a>

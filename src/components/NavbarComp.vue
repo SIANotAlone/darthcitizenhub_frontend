@@ -1,7 +1,7 @@
 <template>
 <nav class="navbar">
     <ul>
-        <li><a href="/">Ігри</a></li>
+        <li><a href="/">Новини</a></li>
         <!-- <li><a href="#">Фільми</a></li>
         <li><a href="#">Серіали</a></li> -->
         <li><a href="/favorite">Закладки</a></li>

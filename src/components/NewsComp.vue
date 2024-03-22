@@ -85,6 +85,9 @@ export default {
 </script>
 
 <style scoped>
+
+
+
 .short {
   width: 100%;
 
