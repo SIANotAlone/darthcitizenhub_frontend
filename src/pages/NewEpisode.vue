@@ -12,18 +12,50 @@
 
   </div>
 
-  <button @click="create_new_episode" class="neon-btn neon-btn--purple">Створити випуск</button>
+  <button @click="show_dialog" class="neon-btn neon-btn--purple">Створити випуск</button>
+     <!-- Modal dialog -->
+     <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="showModal = false">&times;</span>
+        <h2>Підтвердіть будь ласка дію</h2>
+        <br>
+        <p>Ви дійсно хочете створити випуск?</p>
+        <p>Назва: "{{name}}"</p>
+        <p>№{{number}}</p>
+        <br>
+        <button @click="create_new_episode" class="neon-btn neon-btn--purple">Так</button>
+        <button @click="showModal = false" class="neon-btn neon-btn--purple">Ні</button>
+      </div>
+     </div>
 </template>
 
 <script>
 import axios from 'axios'
 import server_ip from "@/myconfig/ipconfig.js"
-
+import { ref } from 'vue';
 
 
 
 export default {
+  setup() {
+
+    const showModal = ref(false);
+    return{showModal}
+  },
+  data() {
+    return {
+      number: 0,
+      name:''
+    }
+  },
   methods: {
+    show_dialog() {
+      let number = parseInt(document.getElementById("number").value)
+      let name = document.getElementById("name").value
+      this.number = number
+      this.name = name
+      this.showModal = true
+    },
     create_new_episode() {
       let number = parseInt(document.getElementById("number").value)
 

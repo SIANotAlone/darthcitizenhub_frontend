@@ -1,7 +1,38 @@
 <template>
     <h1 class="page_title">Сценарій</h1>
-    <button v-if="scenario['released']==false" @click="release_scenario" class="neon-btn neon-btn--purple">Зарелізити сценарій</button>
-    <button v-if="scenario['released']==false" @click="delete_scenario(scenario['id'])" class="neon-btn neon-btn--purple">Видалити сценарій</button>
+    <button v-if="scenario['released']==false" @click="dialog_release" class="neon-btn neon-btn--purple">Зарелізити сценарій</button>
+    <!-- Modal dialog -->
+     <!-- Діалог підтвердження релізу сценарія -->
+     <div v-if="showModalRelease" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="showModalRelease = false">&times;</span>
+        <h2>Підтвердіть будь ласка дію</h2>
+        <br> 
+        <p>Ви дійсно хочете зарелізити сценарій?</p>
+        <br>
+        <p>Назва: "{{ name }}"</p>
+        <br>
+        <button @click="release_scenario" class="neon-btn neon-btn--purple">Так</button>
+        <button @click="showModalRelease = false" class="neon-btn neon-btn--purple">Ні</button>
+      </div>
+     </div>
+    <button v-if="scenario['released']==false" @click="dialog_delete" class="neon-btn neon-btn--purple">Видалити сценарій</button>
+    <!-- Modal dialog -->
+     <!-- Діалог підтвердження видалення сценарія -->
+     <div v-if="showModalDelete" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="showModalDelete = false">&times;</span>
+        <h2>Підтвердіть будь ласка дію</h2>
+        <br> 
+        <p>Ви дійсно хочете видалити сценарій?</p>
+        <br>
+        <p>Назва: "{{ name }}"</p>
+        <br>
+        <button @click="delete_scenario(scenario['id'])" class="neon-btn neon-btn--purple">Так</button>
+        <button @click="showModalDelete = false" class="neon-btn neon-btn--purple">Ні</button>
+      </div>
+     </div>
+
     <h2 v-if="scenario['released']==false" class="edit_title">Редагувати сценарій</h2>
     <h2 v-if="scenario['released']==true" class="edit_title">випущено</h2>
     <div class="editors">
@@ -33,10 +64,14 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
+import { ref } from 'vue';
 
 
 export default {
     setup() {
+        const showModalRelease = ref(false);
+        const showModalDelete = ref(false);
+
         const theme = 'dark';
         const notify = (message) => {
             toast.success(message, {
@@ -44,7 +79,7 @@ export default {
                 theme,
             }); // ToastOptions
         }
-        return { notify };
+        return { notify, showModalRelease,showModalDelete };
     },
     components: {
       
@@ -54,6 +89,7 @@ export default {
     data() {
         return {
             scenario:{},
+            name: '',
             editor: ClassicEditor,
             editorConfig: {
                 
@@ -72,6 +108,18 @@ export default {
     
 },
     methods:{
+        dialog_release(){
+          let name = document.getElementById('name').value
+          this.name = name
+          this.showModalRelease = true
+
+        },
+        dialog_delete(){
+          let name = document.getElementById('name').value
+          this.name = name
+          this.showModalDelete = true
+
+        },
         update_scenario(){
             let editor = document.getElementsByClassName('ck ck-content ck-editor__editable')
             let body = editor[0].innerHTML
@@ -96,34 +144,31 @@ export default {
         },
         delete_scenario(){
             let id = this.scenario['id']
-            var result = window.confirm("Ви впенені, що хочете видалити cценарій? ");
-            if (result) {
-                axios.post(server_ip + '/scenario/delete', {"id": id}).then(response => {
-                    if (response.data['status'] == '200, OK') {
+          
+            axios.post(server_ip + '/scenario/delete', {"id": id}).then(response => {
+                if (response.data['status'] == '200, OK') {
 
-                        // this.notify('Видалено')
-                        this.$router.push({ path: '/scenarios', query: { message: "Сценарій видалено" } })
-                        
+                    // this.notify('Видалено')
+                    this.$router.push({ path: '/scenarios', query: { message: "Сценарій видалено" } })
+                    
 
-                    }
-                })
-            }
+                }
+            })
+            
 
 
         },
         release_scenario(){
             let id = this.scenario['id']
             let req = {"id": id}
-            var result = window.confirm("Ви впенені, що хочете зарелізити cценарій? ");
-            if (result) {
-                axios.post(server_ip + '/scenario/release/', req).then(response => {
-                    if (response.data['status'] == '200, OK') {
+            axios.post(server_ip + '/scenario/release/', req).then(response => {
+                if (response.data['status'] == '200, OK') {
 
-                        // this.notify('Випущено в реліз')
-                        this.$router.push({ path: '/scenarios',query: {message: "Випущено в реліз"}})
-                    }
-                })
-            }
+                    // this.notify('Випущено в реліз')
+                    this.$router.push({ path: '/scenarios',query: {message: "Випущено в реліз"}})
+                }
+            })
+            
         }
     }
 

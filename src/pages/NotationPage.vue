@@ -1,8 +1,32 @@
 <template>
     <h1 class="page_title">Випуск № {{ episode.number }} {{ episode.name }}</h1>
     <button v-if="episode['released']==false" @click="get_from_favorite" class="neon-btn neon-btn--purple">Додати з обраних</button>
-    <button v-if="episode['released']==false" @click="release_episode(episode['id'])" class="neon-btn neon-btn--purple">Зарелізити випуск</button>
-    <button v-if="episode['released']==false" @click="delete_episode(episode['id'])" class="neon-btn neon-btn--purple">Видалити випуск</button>
+    <button v-if="episode['released']==false" @click="showModal=true" class="neon-btn neon-btn--purple">Зарелізити випуск</button>
+     <!-- Modal dialog -->
+     <!-- Діалог підтвердження релізу випуску -->
+     <div v-if="showModal" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="showModal = false">&times;</span>
+        <h2>Підтвердіть будь ласка дію</h2>
+        <p>Ви дійсно хочете зарелізити випуск?</p>
+        <button @click="release_episode(episode['id'])" class="neon-btn neon-btn--purple">Так</button>
+        <button @click="showModal = false" class="neon-btn neon-btn--purple">Ні</button>
+      </div>
+     </div>
+    <button v-if="episode['released']==false" @click="showModalDelete=true" class="neon-btn neon-btn--purple">Видалити випуск</button>
+     <!-- Modal dialog -->
+     <!-- Діалог підтвердження видалення випуску -->
+     <div v-if="showModalDelete" class="modal">
+      <div class="modal-content">
+        <span class="close" @click="showModalDelete = false">&times;</span>
+        <h2>Підтвердіть будь ласка дію</h2>
+        <br>
+        <p>Ви дійсно хочете видалити випуск?</p>
+        <br>
+        <button @click="delete_episode(episode['id'])" class="neon-btn neon-btn--purple">Так</button>
+        <button @click="showModalDelete = false" class="neon-btn neon-btn--purple">Ні</button>
+      </div>
+     </div>
     <button @click="generate_pdf(episode['id'])" class="neon-btn neon-btn--purple">PDF</button>
     <div v-if="this.news_count != 0">
         <h3 v-if="episode['released']==false" class="news_count">Новин додано: {{ this.news_count }} шт. </h3>
@@ -95,12 +119,13 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 import { toast } from 'vue3-toastify';
 import 'vue3-toastify/dist/index.css';
-
+import { ref } from 'vue';
 
 
 export default {
     setup() {
-
+        const showModal = ref(false);
+        const showModalDelete = ref(false);
         const theme = 'dark';
         const notify = (message) => {
             toast.success(message, {
@@ -108,7 +133,7 @@ export default {
                 theme,
             }); // ToastOptions
         }
-        return { notify };
+        return { notify, showModal, showModalDelete };
     },
     components: {
         ckeditor: CKEditor.component,
@@ -283,27 +308,25 @@ export default {
         },
         release_episode(id){
             let request = { "id": id }
-            var result = window.confirm("Ви впенені, що хочете зарелізити випуск?");
-            if (result){
-                axios.post(server_ip + '/episode/release/', request).then(response => {
-                    if (response.data['status'] == '200, OK') {
-                        this.$router.push({ path: '/episode', query: { message: "Випущено в реліз" } })
-                    }
-                })
-            }
+            
+            axios.post(server_ip + '/episode/release/', request).then(response => {
+                if (response.data['status'] == '200, OK') {
+                    this.$router.push({ path: '/episode', query: { message: "Випущено в реліз" } })
+                }
+            })
+            
         },
         delete_episode(id) {
 
             let request = { "id": id }
-            var result = window.confirm("Ви впенені, що хочете видалити всі новини зі списку обраних?");
-            if (result) {
-                axios.post(server_ip + '/episode/delete/', request).then(response => {
-                    if (response.data['status'] == '200, OK') {
-                        this.$router.push({ path: '/episode', query: { message: "Епізод видалено" } })
-                    }
+         
+            axios.post(server_ip + '/episode/delete/', request).then(response => {
+                if (response.data['status'] == '200, OK') {
+                    this.$router.push({ path: '/episode', query: { message: "Епізод видалено" } })
+                }
 
-                })
-            }
+            })
+            
 
 
         }

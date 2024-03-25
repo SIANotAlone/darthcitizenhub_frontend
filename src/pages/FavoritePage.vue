@@ -7,11 +7,14 @@
     <div v-if="showModal" class="modal">
       <div class="modal-content">
         <span class="close" @click="showModal = false">&times;</span>
-        <h2>Ви впевнені?</h2>
+        <h2>Підтвердіть будь ласка дію</h2>
+        <br>
         <p>Ви дійсно хочете видалити всі закладки?</p>
+        <br>
         <button @click="delete_all_favorite" class="neon-btn neon-btn--purple">Так</button>
         <button @click="showModal = false" class="neon-btn neon-btn--purple">Ні</button>
       </div>
+
     </div>
         <h3 v-if="news == null" class="empty">Новин в закладки поки що не додано</h3>
 
