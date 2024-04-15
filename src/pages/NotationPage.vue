@@ -1,76 +1,82 @@
 <template>
     <h1 class="page_title">Випуск № {{ episode.number }} {{ episode.name }}</h1>
-    <button v-if="episode['released']==false" @click="get_from_favorite" class="neon-btn neon-btn--purple">Додати з обраних</button>
-    <button v-if="episode['released']==false" @click="showModal=true" class="neon-btn neon-btn--purple">Зарелізити випуск</button>
-     <!-- Modal dialog -->
-     <!-- Діалог підтвердження релізу випуску -->
-     <div v-if="showModal" class="modal">
-      <div class="modal-content">
-        <span class="close" @click="showModal = false">&times;</span>
-        <h2>Підтвердіть будь ласка дію</h2>
-        <p>Ви дійсно хочете зарелізити випуск?</p>
-        <button @click="release_episode(episode['id'])" class="neon-btn neon-btn--purple">Так</button>
-        <button @click="showModal = false" class="neon-btn neon-btn--purple">Ні</button>
-      </div>
-     </div>
-    <button v-if="episode['released']==false" @click="showModalDelete=true" class="neon-btn neon-btn--purple">Видалити випуск</button>
-     <!-- Modal dialog -->
-     <!-- Діалог підтвердження видалення випуску -->
-     <div v-if="showModalDelete" class="modal">
-      <div class="modal-content">
-        <span class="close" @click="showModalDelete = false">&times;</span>
-        <h2>Підтвердіть будь ласка дію</h2>
-        <br>
-        <p>Ви дійсно хочете видалити випуск?</p>
-        <br>
-        <button @click="delete_episode(episode['id'])" class="neon-btn neon-btn--purple">Так</button>
-        <button @click="showModalDelete = false" class="neon-btn neon-btn--purple">Ні</button>
-      </div>
-     </div>
+    <button v-if="episode['released'] == false" @click="get_from_favorite" class="neon-btn neon-btn--purple">Додати з
+        обраних</button>
+    <button v-if="episode['released'] == false" @click="showModal = true" class="neon-btn neon-btn--purple">Зарелізити
+        випуск</button>
+    <!-- Modal dialog -->
+    <!-- Діалог підтвердження релізу випуску -->
+    <div v-if="showModal" class="modal">
+        <div class="modal-content">
+            <span class="close" @click="showModal = false">&times;</span>
+            <h2>Підтвердіть будь ласка дію</h2>
+            <br>
+            <p>Ви дійсно хочете зарелізити випуск?</p>
+            <br>
+            <button @click="release_episode(episode['id'])" class="neon-btn neon-btn--purple">Так</button>
+            <button @click="showModal = false" class="neon-btn neon-btn--purple">Ні</button>
+        </div>
+    </div>
+    <button v-if="episode['released'] == false" @click="showModalDelete = true" class="neon-btn neon-btn--purple">Видалити
+        випуск</button>
+    <!-- Modal dialog -->
+    <!-- Діалог підтвердження видалення випуску -->
+    <div v-if="showModalDelete" class="modal">
+        <div class="modal-content">
+            <span class="close" @click="showModalDelete = false">&times;</span>
+            <h2>Підтвердіть будь ласка дію</h2>
+            <br>
+            <p>Ви дійсно хочете видалити випуск?</p>
+            <br>
+            <button @click="delete_episode(episode['id'])" class="neon-btn neon-btn--purple">Так</button>
+            <button @click="showModalDelete = false" class="neon-btn neon-btn--purple">Ні</button>
+        </div>
+    </div>
     <button @click="generate_pdf(episode['id'])" class="neon-btn neon-btn--purple">PDF</button>
     <div v-if="this.news_count != 0">
-        <h3 v-if="episode['released']==false" class="news_count">Новин додано: {{ this.news_count }} шт. </h3>
-        <h3 v-if="episode['released']==true" class="news_count">Випуск випущено в реліз</h3>
+        <h3 v-if="episode['released'] == false" class="news_count">Новин додано: {{ this.news_count }} шт. </h3>
+        <h3 v-if="episode['released'] == true" class="news_count">Випуск випущено в реліз</h3>
     </div>
     <!-- опис для відео -->
     <div class="notation">
-            <div class="title"> Опис </div>
-            <input v-if="episode['released']==false" type="file" ref="fileInput" @change="get_contents">
-            <div v-if="episode['released']==false">
-                <ckeditor :editor="editor" v-model="episode.description" :config="editorConfig" />
-                <button v-if="episode['released']==false" @click="save_contents"  class="neon-btn neon-btn--purple save"
+        <div class="title"> Опис </div>
+        <input v-if="episode['released'] == false" type="file" ref="fileInput" @change="get_contents">
+        <div v-if="episode['released'] == false">
+            <ckeditor :editor="editor" v-model="episode.description" :config="editorConfig" />
+            <button v-if="episode['released'] == false" @click="save_contents" class="neon-btn neon-btn--purple save"
                 :id="save_contents">Зберегти</button>
-            </div>
-            <div v-if="episode['released']==true">
-                <p v-html="episode.description" class="text"></p>
-                <br><br>
-            </div>
         </div>
-        <!-- вступ для відео -->
-        <div class="notation">
-            <div class="title"> Вступ </div>
-            <div v-if="episode['released']==false">
-                <ckeditor :editor="editor" v-model="episode.intro" :config="editorConfig" :id="intro" />
-                <button v-if="episode['released']==false" @click="save_intro" class="neon-btn neon-btn--purple save"
+        <div v-if="episode['released'] == true">
+            <p v-html="episode.description" class="text"></p>
+            <br><br>
+        </div>
+    </div>
+    <!-- вступ для відео -->
+    <div class="notation">
+        <div class="title"> Вступ </div>
+        <div v-if="episode['released'] == false">
+            <ckeditor :editor="editor" v-model="episode.intro" :config="editorConfig" :id="intro" />
+            <button v-if="episode['released'] == false" @click="save_intro" class="neon-btn neon-btn--purple save"
                 :id="save_intro">Зберегти</button>
-            </div>
-            <div v-if="episode['released']==true">
-                <p v-html="episode.intro" class="text"></p>
-                <br><br>
-            </div>
         </div>
+        <div v-if="episode['released'] == true">
+            <p v-html="episode.intro" class="text"></p>
+            <br><br>
+        </div>
+    </div>
     <div v-if="isNaN(data['notation']) == false">
         <h3 class="empty">Нотатки відсутні</h3>
     </div>
-    <div v-for="(item , index) in data['notation']" v-bind:key="item.id">
+    <div v-for="(item, index) in data['notation']" v-bind:key="item.id">
 
         <div class="notation">
 
             <div class="title">
-                <h3><a :href="'' + item['url']" class="title">#{{ index+1 }} {{ item['title'] }}</a></h3>
+                <h3><a :href="'' + item['url']" class="title">#{{ index + 1 }} {{ item['title'] }}</a></h3>
             </div>
             <div class="wraper">
-                <div class="preview"><a :href="item.url" :key="item.url"><img :src="item['preview']" v-bind:alt="pic"></a>
+                <div class="preview"><a :href="item.url" :key="item.url"><img :src="item['preview']"
+                            v-bind:alt="pic"></a>
                 </div>
 
                 <div v-if="item['short'] != 'None'" class="short">
@@ -81,34 +87,48 @@
             </div>
 
             <div class="org">Джерело: <span class="origin">{{ item['origin'] }}</span></div>
-            <div v-if="episode['released']==false">
+            <div v-if="episode['released'] == false">
                 <ckeditor :editor="editor" v-model="item['notation']" :config="editorConfig" :id="item['id']" />
             </div>
-            <div v-if="episode['released']==true">
+            <div v-if="episode['released'] == true">
                 <p v-html="item['notation']" class="text"></p>
                 <br><br>
             </div>
-            <button v-if="episode['released']==false" @click="get_editor_text(item['id'])" class="neon-btn neon-btn--purple save"
-                :id="item['id']">Зберегти</button>
-            <button v-if="episode['released']==false" class="neon-btn neon-btn--purple save" @click="delete_notation(item['id'])"
-                :id="item['id']">Видалити</button>
-
+            <button v-if="episode['released'] == false" @click="get_editor_text(item['id'])"
+                class="neon-btn neon-btn--purple save" :id="item['id']">Зберегти</button>
+            <button v-if="episode['released'] == false" class="neon-btn neon-btn--purple save"
+                @click="delete_news_from_episode(item['id'],item['title'])" :id="item['id']">Видалити</button>
+            <!-- Modal dialog -->
+            <!-- Діалог підтвердження релізу випуску -->
+            <div v-if="showModalDeleteNews" class="modal">
+                <div class="modal-content">
+                    <span class="close" @click="showModalDeleteNews = false">&times;</span>
+                    <h2>Підтвердіть будь ласка дію</h2>
+                    <br>
+                    <p>Ви дійсно хочете видалити новину з випуску?</p>
+                    <br>
+                    <p>{{ selected_title }}</p>
+                    <br>
+                    <button @click="delete_notation" class="neon-btn neon-btn--purple">Так</button>
+                    <button @click="showModalDeleteNews = false" class="neon-btn neon-btn--purple">Ні</button>
+                </div>
+            </div>
         </div>
 
     </div>
     <!-- закінчення відео -->
     <div class="notation">
-            <div class="title"> Закінчення </div>
-            <div v-if="episode['released']==false">
-                <ckeditor :editor="editor" v-model="episode.ending" :config="editorConfig" :id="ending" />
-                <button v-if="episode['released']==false" @click="save_ending" class="neon-btn neon-btn--purple save"
+        <div class="title"> Закінчення </div>
+        <div v-if="episode['released'] == false">
+            <ckeditor :editor="editor" v-model="episode.ending" :config="editorConfig" :id="ending" />
+            <button v-if="episode['released'] == false" @click="save_ending" class="neon-btn neon-btn--purple save"
                 :id="save_intro">Зберегти</button>
-            </div>
-            <div v-if="episode['released']==true">
-                <p v-html="episode.ending" class="text"></p>
-                <br><br>
-            </div>
         </div>
+        <div v-if="episode['released'] == true">
+            <p v-html="episode.ending" class="text"></p>
+            <br><br>
+        </div>
+    </div>
 </template>
 <script>
 
@@ -126,6 +146,7 @@ export default {
     setup() {
         const showModal = ref(false);
         const showModalDelete = ref(false);
+        const showModalDeleteNews = ref(false);
         const theme = 'dark';
         const notify = (message) => {
             toast.success(message, {
@@ -133,7 +154,7 @@ export default {
                 theme,
             }); // ToastOptions
         }
-        return { notify, showModal, showModalDelete };
+        return { notify, showModal, showModalDelete, showModalDeleteNews };
     },
     components: {
         ckeditor: CKEditor.component,
@@ -149,6 +170,8 @@ export default {
 
 
             },
+            selected_title:'',
+            selected_id:0,
             editorData: '<p>Initial content</p>',
             news_count: 0,
             selectedFile: null,
@@ -196,8 +219,8 @@ export default {
             const selectedFile = event.target.files[0];
 
             if (!selectedFile) {
-            console.error('No file selected');
-            return;
+                console.error('No file selected');
+                return;
             }
 
             const formData = new FormData();
@@ -205,44 +228,49 @@ export default {
 
             const response = await axios.post(server_ip + '/episode/contents/', formData)
             // console.log(response)
-            let desc=""
+            let desc = ""
             let contents = response.data['contents']
             contents.forEach(element => {
-                desc+='<p>'+element+"</p>"
+                desc += '<p>' + element + "</p>"
             });
-            
-            this.episode['description']=desc
+
+            this.episode['description'] = desc
             this.notify('Оброблено')
 
         },
-        save_contents(){
+        delete_news_from_episode(id,title){
+            this.selected_id = id;
+            this.selected_title = title;
+            this.showModalDeleteNews = true;
+        },
+        save_contents() {
             //0 - опис
             let content = document.getElementsByClassName('ck ck-content ck-editor__editable')[0].innerHTML
-            let req = {"id":this.episode['id'],"content":content}
+            let req = { "id": this.episode['id'], "content": content }
             axios.post(server_ip + '/episode/update_contents/', req).then(response => {
                 if (response.data['status'] == '200, OK') {
                     this.notify('Збережено')
                 }
             })
-            
-            
+
+
         },
-        save_intro(){
+        save_intro() {
             //1 - вступ
             let content = document.getElementsByClassName('ck ck-content ck-editor__editable')[1].innerHTML
-            let req = {"id":this.episode['id'],"content":content}
+            let req = { "id": this.episode['id'], "content": content }
             axios.post(server_ip + '/episode/update_intro/', req).then(response => {
                 if (response.data['status'] == '200, OK') {
                     this.notify('Збережено')
                 }
             })
-            
+
         },
-        save_ending(){
+        save_ending() {
             //останній - ending
-            let count = document.getElementsByClassName('ck ck-content ck-editor__editable').length -1
+            let count = document.getElementsByClassName('ck ck-content ck-editor__editable').length - 1
             let content = document.getElementsByClassName('ck ck-content ck-editor__editable')[count].innerHTML
-            let req = {"id":this.episode['id'],"content":content}
+            let req = { "id": this.episode['id'], "content": content }
             axios.post(server_ip + '/episode/update_ending/', req).then(response => {
                 if (response.data['status'] == '200, OK') {
                     this.notify('Збережено')
@@ -251,7 +279,7 @@ export default {
             // console.log(req)
         },
         generate_pdf(id) {
-            window.location.href = server_ip+'/episode/get/' + id + '/pdf';
+            window.location.href = server_ip + '/episode/get/' + id + '/pdf';
         },
         get_editor_text(id) {
 
@@ -264,9 +292,9 @@ export default {
             //останній - ending
             let episodes = document.getElementsByClassName('ck ck-content ck-editor__editable')
 
-            for (let ep = 2; ep < episodes.length-1; ep++) {
+            for (let ep = 2; ep < episodes.length - 1; ep++) {
                 //не враховуємо перші два та останній елемент зі списку
-                let ep1=ep-2
+                let ep1 = ep - 2
                 let notation_id = this.data['notation'][ep1]['id']
                 let notation = episodes[ep].innerHTML
                 // console.log(notation_id)
@@ -280,7 +308,7 @@ export default {
                     // console.log(update_request)
                     this.notify('Збережено')
 
-                    
+
                     // console.log('notation id ' + notation_id)
                     // console.log(episodes[ep].innerText);
                 }
@@ -290,43 +318,50 @@ export default {
             }
             //   console.log(document.getElementsByClassName('ck ck-content ck-editor__editable')[0].innerText);
         },
-        delete_notation(id) {
-            let request = { "id": id }
-            var result = window.confirm("Ви впенені, що хочете видалити новину з випуска? ");
-            if (result) {
-                axios.post(server_ip + '/episode/notation/delete/', request).then(response => {
-                    if (response.data['status'] == '200, OK') {
-
-                        this.data = {}
-                        axios.get(server_ip + '/episode/get/' + this.$route.params.id).then(response => {
-                            this.data = response.data; this.episode = this.data['episode']
-                        })
-
-                    }
-                })
-            }
-        },
-        release_episode(id){
-            let request = { "id": id }
+        delete_notation() {
+            let request = { "id": this.selected_id }
             
+            axios.post(server_ip + '/episode/notation/delete/', request).then(response => {
+                if (response.data['status'] == '200, OK') {
+
+                    this.data = {}
+                    axios.get(server_ip + '/episode/get/' + this.$route.params.id).then(response => {
+                        this.data = response.data; this.episode = this.data['episode']
+                        this.news_count -=1;
+                        this.notify('Видалено')
+                        this.selected_id=0;
+                        this.selected_title='';
+                    })
+
+                }
+            })
+            
+            this.showModalDeleteNews=false;
+
+            
+
+        },
+        release_episode(id) {
+            let request = { "id": id }
+
             axios.post(server_ip + '/episode/release/', request).then(response => {
                 if (response.data['status'] == '200, OK') {
                     this.$router.push({ path: '/episode', query: { message: "Випущено в реліз" } })
                 }
             })
-            
+
         },
         delete_episode(id) {
 
             let request = { "id": id }
-         
+
             axios.post(server_ip + '/episode/delete/', request).then(response => {
                 if (response.data['status'] == '200, OK') {
                     this.$router.push({ path: '/episode', query: { message: "Епізод видалено" } })
                 }
 
             })
-            
+
 
 
         }
@@ -338,13 +373,14 @@ export default {
 
 </script>
 <style scoped>
-.text{
+.text {
     margin-left: 40px;
     margin-right: 40px;
     text-align: justify;
 
 
 }
+
 .notation {
     background-color: ghostwhite;
     margin-left: 20%;

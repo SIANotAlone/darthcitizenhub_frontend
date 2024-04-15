@@ -22,6 +22,7 @@
     "vue": "^3.2.13",
     "vue-apexcharts": "^1.6.2",
     "vue-router": "^4.2.4",
+    "vue-summernote": "^1.0.3",
     "vue3-summernote-editor": "^1.0.2",
     "vue3-toastify": "^0.2.1"
   },

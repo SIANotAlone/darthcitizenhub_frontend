@@ -219,13 +219,52 @@ img {
   border-radius: 50%;
 }
 
-.add_to_fav:hover {
+/* було */
+/* .add_to_fav:hover {
   cursor: pointer;
   text-decoration: underline;
+  
+} */
+
+
+/* стало */
+/* ********************** */
+.add_to_fav {
+    display: inline-block;
+    /* color: #07aa19; */
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    position: relative;
+
+
 }
+.add_to_fav:after {
+    display: block;
+    content: "";
+    background-color: #5dbdff;
+    height: 3px;
+    width: 0%;
+    left: 35%;
+    position: absolute;
+    -webkit-transition: width .3s ease-in-out;
+    -moz--transition: width .3s ease-in-out;
+    transition: width .3s ease-in-out;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+.add_to_fav:hover:after,
+.add_to_fav:focus:after {
+    width: 100%;
+}
+/* ********************** */
+
 
 input[type=checkbox] {
   transform: scale(1.5);
   margin-left: 10px;
   cursor: pointer;
-}</style>
+}
+
+</style>
