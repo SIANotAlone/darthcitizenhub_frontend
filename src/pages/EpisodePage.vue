@@ -43,6 +43,7 @@ export default {
       released_color: '##5dbdff',
     }
   }, methods: {
+   
     formatDate(dateString) {
       const date = new Date(dateString);
       return date.toLocaleString('uk-UA', {
@@ -59,7 +60,7 @@ export default {
   },
 
   mounted() {
-    axios.get(server_ip + '/episode/get_all').then(response => this.episodes = response.data)
+    axios.get(server_ip + '/episode/get_all').then(response => this.episodes = response.data.reverse())
     try{
       const message = this.$route.query.message;
 

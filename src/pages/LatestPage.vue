@@ -1,6 +1,21 @@
 <template>
     <div><h1 class="page_title">Останні новини</h1>
       <div id="v-model-select" class="demo">
+        <div class="updater">
+
+         <button  @click="showDialog" id="upd_btn" class="neon-btn neon-btn--purple">Оновити новини</button>
+          <div v-if="showModal" class="modal">
+            <div class="modal-content">
+              <span class="close" @click="showModal = false">&times;</span>
+              <h2>Підтвердіть будь ласка дію</h2>
+              <br>
+              <p>Ви дійсно хочете оновити новини?</p>
+              <br>
+              <button @click="update_news" class="neon-btn neon-btn--purple">Так</button>
+              <button @click="showModal = false" class="neon-btn neon-btn--purple">Ні</button>
+            </div>
+          </div>
+        </div>
   <select v-model="selected" @change="change_origin()">
     <option disabled value="">Оберіть джерело</option>
     <option>Всі джерела</option>
@@ -21,10 +36,27 @@
 import axios from 'axios';
 import NewsComp from "@/components/NewsComp.vue"
 import server_ip from "@/myconfig/ipconfig.js"
+import { ref } from 'vue';
+import news_server_ip from "@/myconfig/news_server_ip.js"
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 export default {
 
+  setup() {
+    
+    const showModal = ref(false);
+    const theme = 'dark';
+        const notify = (message) => {
+            toast.success(message, {
+                autoClose: 3000,
+                theme,
+            }); // ToastOptions
+        }
 
+
+    return { showModal, notify}
+  },
   components: {
     NewsComp
   },
@@ -38,6 +70,21 @@ export default {
     }
   },
   methods:{
+ 
+    showDialog() {
+            this.showModal = true
+        },
+        update_news() {
+            axios.post(news_server_ip + '/update_news').then(response => {
+                console.log(response.data)
+                this.showModal = false
+                this.notify('Оновлюється, оновіть сторінку через приблизно 15 секунд')
+                var update_button = document.getElementById('upd_btn');
+                update_button.disabled = true
+                update_button.style.backgroundColor = 'grey'
+            })
+            
+        },
     handleChange(id) {
     
       //console.log(`Checkbox with ID ${id} changed: ${this.isChecked}`)
@@ -170,7 +217,5 @@ text-shadow:
 0 0 100px #8bd0ff,
 0 0 150px #8bd0ff;
 }
-
-
 
     </style>

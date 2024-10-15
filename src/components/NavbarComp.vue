@@ -8,6 +8,7 @@
         <li><a href="/episode">Випуски</a></li>
         <li><a href="/scenarios">Сценарії</a></li>
         <li><a href="/statistics">Статистика</a></li>
+
     </ul>
 </nav>
 </template>

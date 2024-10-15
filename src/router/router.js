@@ -10,6 +10,7 @@ import Scenarios from "@/pages/ScenariosPage"
 import Scenario from "@/pages/ScenarioPage"
 import NewScenario from "@/pages/NewScenario"
 
+
 import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
@@ -22,6 +23,7 @@ const routes = [
     {path: '/scenarios', component: Scenarios},
     {path: '/scenario/:id', component: Scenario, props: true},
     {path: '/scenario/new/', component: NewScenario},
+
   ];
   const router = createRouter({
     history: createWebHistory(),

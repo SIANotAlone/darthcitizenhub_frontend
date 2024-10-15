@@ -103,8 +103,11 @@ export default {
 .title {
   margin-top: 10px;
   font-weight: 600;
-  color: lightslategray;
+  color: rgb(111, 162, 213);
   text-decoration: none;
+
+
+
 }
 
 .wraper {
@@ -238,6 +241,10 @@ img {
     position: relative;
 
 
+}
+
+a {
+  text-decoration: none;
 }
 .add_to_fav:after {
     display: block;

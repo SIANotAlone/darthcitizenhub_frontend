@@ -17,7 +17,8 @@
             <button @click="showModal = false" class="neon-btn neon-btn--purple">Ні</button>
         </div>
     </div>
-    <button v-if="episode['released'] == false" @click="showModalDelete = true" class="neon-btn neon-btn--purple">Видалити
+    <button v-if="episode['released'] == false" @click="showModalDelete = true"
+        class="neon-btn neon-btn--purple">Видалити
         випуск</button>
     <!-- Modal dialog -->
     <!-- Діалог підтвердження видалення випуску -->
@@ -97,7 +98,13 @@
             <button v-if="episode['released'] == false" @click="get_editor_text(item['id'])"
                 class="neon-btn neon-btn--purple save" :id="item['id']">Зберегти</button>
             <button v-if="episode['released'] == false" class="neon-btn neon-btn--purple save"
-                @click="delete_news_from_episode(item['id'],item['title'])" :id="item['id']">Видалити</button>
+                @click="delete_news_from_episode(item['id'], item['title'])" :id="item['id']">Видалити</button>
+            <button v-if="episode['released'] == false" class="neon-btn neon-btn--purple save"
+                @click="get_text_news(item['origin'], item['url'], item['id'])" :id="item['id']" style="width: 100px;">Текст</button>
+                <!-- <button v-if="episode['released'] == false" class="neon-btn neon-btn--purple save"
+                style="width: 100px;" @click="use_openai">AI</button> -->
+
+
             <!-- Modal dialog -->
             <!-- Діалог підтвердження релізу випуску -->
             <div v-if="showModalDeleteNews" class="modal">
@@ -135,6 +142,7 @@
 import axios from 'axios';
 
 import server_ip from "@/myconfig/ipconfig.js"
+import flask_server_ip from "@/myconfig/news_server_ip.js"
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import CKEditor from '@ckeditor/ckeditor5-vue'
 import { toast } from 'vue3-toastify';
@@ -150,11 +158,19 @@ export default {
         const theme = 'dark';
         const notify = (message) => {
             toast.success(message, {
-                autoClose: 1000,
+                autoClose: 2000,
                 theme,
             }); // ToastOptions
+
         }
-        return { notify, showModal, showModalDelete, showModalDeleteNews };
+        const notify_warn = (message) => {
+            toast.error(message, {
+                autoClose: 2000,
+                theme,
+            }); // ToastOptions
+
+        }
+        return { notify, notify_warn, showModal, showModalDelete, showModalDeleteNews };
     },
     components: {
         ckeditor: CKEditor.component,
@@ -170,8 +186,8 @@ export default {
 
 
             },
-            selected_title:'',
-            selected_id:0,
+            selected_title: '',
+            selected_id: 0,
             editorData: '<p>Initial content</p>',
             news_count: 0,
             selectedFile: null,
@@ -238,7 +254,7 @@ export default {
             this.notify('Оброблено')
 
         },
-        delete_news_from_episode(id,title){
+        delete_news_from_episode(id, title) {
             this.selected_id = id;
             this.selected_title = title;
             this.showModalDeleteNews = true;
@@ -277,6 +293,32 @@ export default {
                 }
             })
             // console.log(req)
+        },
+        get_text_news(origin, url, id) {
+            var data = { "origin": origin, "url": url }
+
+            axios.post(flask_server_ip + '/fetcher/get/', data).then(response => {
+
+                // this.episode[id]['description'] = response.data['text']
+                let text = response.data['text']
+                console.log(text)
+                this.notify('Оновлено')
+                let i = 0
+                this.data['notation'].forEach(element => {
+                    if (element['id'] == id) {
+                        this.data['notation'][i]['notation'] = text
+
+                    }
+                    i++
+                });
+
+
+            }).catch(error => {
+                this.notify_warn(error['message'])
+            })
+        },
+        use_openai() {
+            this.notify('Використано ChatGPT')
         },
         generate_pdf(id) {
             window.location.href = server_ip + '/episode/get/' + id + '/pdf';
@@ -320,25 +362,25 @@ export default {
         },
         delete_notation() {
             let request = { "id": this.selected_id }
-            
+
             axios.post(server_ip + '/episode/notation/delete/', request).then(response => {
                 if (response.data['status'] == '200, OK') {
 
                     this.data = {}
                     axios.get(server_ip + '/episode/get/' + this.$route.params.id).then(response => {
                         this.data = response.data; this.episode = this.data['episode']
-                        this.news_count -=1;
+                        this.news_count -= 1;
                         this.notify('Видалено')
-                        this.selected_id=0;
-                        this.selected_title='';
+                        this.selected_id = 0;
+                        this.selected_title = '';
                     })
 
                 }
             })
-            
-            this.showModalDeleteNews=false;
 
-            
+            this.showModalDeleteNews = false;
+
+
 
         },
         release_episode(id) {
